@@ -1,0 +1,8 @@
+[{
+    "name": "gcc",
+    "compilers":
+    {
+        "C": "arm-none-eabi-gcc",
+        "CXX": "arm-none-eabi-g++"
+    }
+}]

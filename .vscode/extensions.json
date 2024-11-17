@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+      "ms-vscode.cpptools-extension-pack",
+      "twxs.cmake",
+      "esbenp.prettier-vscode",
+      "usernamehw.errorlens",
+      "purocean.drawio-preview",
+      "ryanluker.vscode-coverage-gutters",
+      "ms-vscode.cmake-tools"
+    ]
+  }

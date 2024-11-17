@@ -1,0 +1,16 @@
+{
+    "cmake.configureOnOpen": true,
+    "cmake.options.statusBarVisibility": "icon",
+    "workbench.editor.highlightModifiedTabs": true,
+    "search.showLineNumbers": true,
+    "C_Cpp.default.cStandard": "c99",
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "editor.wordWrapColumn": 200,
+    "editor.tabCompletion": "on",
+    "editor.renderWhitespace": "all",
+    "editor.renderControlCharacters": true,
+    "editor.tabSize": 4,
+    "files.associations": {
+        "stm32f4xx_hal.h": "c"
+    },
+}

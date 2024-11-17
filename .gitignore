@@ -1,32 +1,79 @@
-# Prerequisites
-*.d
+# ------------------------------------------------------------
+# CMake & Build Directories
+# ------------------------------------------------------------
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# Ignore any directory starting with build
+build*/
 
-# Precompiled Headers
-*.gch
-*.pch
+# Alternatively, to ignore build directories anywhere in the repository:
+# **/build*/
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
 
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
+# Generated executable and library files
 *.exe
 *.out
 *.app
+*.dll
+*.so
+*.dylib
+*.lib
+*.a
+
+# Object files
+*.o
+*.obj
+*.lo
+*.slo
+
+# Precompiled headers
+*.gch
+*.pch
+
+# Debugging symbols
+*.dSYM/
+
+# Temporary files
+*.tmp
+*.temp
+
+# ------------------------------------------------------------
+# IDE Specific Files
+# ------------------------------------------------------------
+
+# Visual Studio
+*.sln
+*.vcxproj*
+*.user
+*.suo
+*.opensdf
+*.VC.db
+
+# Xcode
+*.xcodeproj/
+*.xcworkspace/
+*.xcuserdata/
+
+# CLion
+.idea/
+
+# ------------------------------------------------------------
+# OS Specific Files
+# ------------------------------------------------------------
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
