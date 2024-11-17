@@ -47,6 +47,7 @@ target_link_options(${target} PUBLIC
     -lc
     -lm
     -lnosys
+    -Wl,--print-memory-usage
     -Wl,-Map=${map_file},--cref
     -Wl,--gc-sections
 )
@@ -61,10 +62,12 @@ add_custom_command(TARGET ${target}
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${target}> ${CMAKE_BINARY_DIR}/$<TARGET_FILE_NAME:${target}>
 )
 
+#[[-
 add_custom_command(TARGET ${target}
     POST_BUILD
     COMMAND arm-none-eabi-size ${CMAKE_BINARY_DIR}/${target}
 )
+]]
 
 add_custom_command(TARGET ${target}
     POST_BUILD
