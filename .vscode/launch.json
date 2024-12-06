@@ -5,11 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "lldb",
+            "name": "OCD-Debug",
+            "type": "cortex-debug",
             "request": "launch",
-            "name": "Debug",
-            "program": "${workspaceFolder}/<executable file>",
-            "args": [],
+            "executable": "${workspaceFolder}/build/DEMO_STM32.out",
             "cwd": "${workspaceFolder}"
         }
     ]
