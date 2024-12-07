@@ -18,12 +18,14 @@ set(CMAKE_INCLUDE_INSTALL_PATH  "${CMAKE_INSTALL_INCLUDEDIR}/${CMAKE_INSTALL_SUF
 Available controllers by Linker
 -------------------------------------]]
 # set(CONTROLLER_ID             "STM32F411CEUx_FLASH")
+set(CONTROLLER_ID               "STM32F746NG_FLASH")
+
 #[[-----------------------------------
 Dual core controllers:
 compile each core at the time
 -------------------------------------]]
 # set(CONTROLLER_ID               "stm32h755xx_flash_CM7") # CM7 CORE H755
-set(CONTROLLER_ID             "stm32h755xx_flash_CM4") # CM4 CORE H755
+# set(CONTROLLER_ID               "stm32h755xx_flash_CM4") # CM4 CORE H755
 
 string(MAKE_C_IDENTIFIER PROJECT_ID "${CMAKE_PROJECT_NAME}")
 string(TOUPPER ${CMAKE_PROJECT_NAME} ${CMAKE_PROJECT_DESCRIPTION})
@@ -43,11 +45,63 @@ project(${CMAKE_PROJECT_NAME} C ASM)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 enable_language(ASM)
 
-if ((${CONTROLLER_ID} STREQUAL "STM32F746NGHx_FLASH") OR (${CONTROLLER_ID} STREQUAL "stm32h755xx_flash_CM7"))
-set(SYSTEM_COMPILE_OPTIONS ${DEFAULT_COMPILE_OPTIONS_M7})
+if ((${CONTROLLER_ID} STREQUAL "STM32F746NG_FLASH") OR (${CONTROLLER_ID} STREQUAL "stm32h755xx_flash_CM7"))
+    set(SYSTEM_COMPILE_OPTIONS ${DEFAULT_COMPILE_OPTIONS_M7})
+
+    set(LINKER_EXT_OPTIONS
+    -mfpu=fpv4-sp-d16
+    -mcpu=cortex-m7
+    -mfloat-abi=hard
+    -mthumb
+    -lc
+    -lm
+    -lnosys
+    -Wl,--print-memory-usage)
+
+    if (${CONTROLLER_ID} STREQUAL "STM32F746NG_FLASH")
+        set(TARGET_COMPILE_DEFS
+        USE_HAL_DRIVER 
+	    STM32F746xx )
+    elseif (${CONTROLLER_ID} STREQUAL "stm32h755xx_flash_CM7")
+        set(TARGET_COMPILE_DEFS
+        CORE_CM7
+        USE_HAL_DRIVER 
+        STM32H755xx )
+    endif()
+
 else()
-set(SYSTEM_COMPILE_OPTIONS ${DEFAULT_COMPILE_OPTIONS_M4})
+
+    set(SYSTEM_COMPILE_OPTIONS ${DEFAULT_COMPILE_OPTIONS_M4})
+
+    set(LINKER_EXT_OPTIONS
+    -mfpu=fpv4-sp-d16
+    -mcpu=cortex-m4
+    -mfloat-abi=hard
+    -mthumb
+    -lc
+    -lm
+    -lnosys
+    -Wl,--print-memory-usage)
+
+    if (${CONTROLLER_ID} STREQUAL "STM32F411CEUx_FLASH")
+        set(TARGET_COMPILE_DEFS
+        CORE_CM4
+        USE_HAL_DRIVER 
+        STM32F4xx )
+    elseif (${CONTROLLER_ID} STREQUAL "stm32h755xx_flash_CM4")
+        set(TARGET_COMPILE_DEFS
+        CORE_CM4
+        USE_HAL_DRIVER 
+        STM32H755xx )
+    endif()
 endif()
+
+message("Compiler options: ${SYSTEM_COMPILE_OPTIONS}")
+message("*******************************************")
+message("Target compile defs: ${TARGET_COMPILE_DEFS}")
+message("*******************************************")
+message("Linker options: ${LINKER_EXT_OPTIONS}")
+message("*******************************************")
 
 set(SYSTEM_LINKER_FILE
 "${CONTROLLER_ID}.ld"
@@ -84,5 +138,9 @@ elseif (${CONTROLLER_ID} STREQUAL "stm32h755xx_flash_CM7")
 elseif (${CONTROLLER_ID} STREQUAL "stm32h755xx_flash_CM4")
     message("*** Building STM32H7 CORE M4 ***")
     add_subdirectory(21_asw_h7)
+
+elseif (${CONTROLLER_ID} STREQUAL "STM32F746NG_FLASH")
+    message("*** Building STM32F7 ***")
+    add_subdirectory(31_asw_f7)
 
 endif()
