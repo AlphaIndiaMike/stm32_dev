@@ -21,7 +21,7 @@ set (DBG_COMPILE_OPTIONS_M7 ${DBG_COMPILE_OPTIONS_M7}
         "-ffunction-sections \\"
         "-Wdouble-promotion \\"
         "-Wall \\"
-        "-Og \\"
+        "-Og -g3 \\"
         ""
     )
 string (REPLACE ";" " " DBG_COMPILE_OPTIONS_M7 ${DBG_COMPILE_OPTIONS_M7})
@@ -49,7 +49,7 @@ set (DBG_COMPILE_OPTIONS_M4 ${DBG_COMPILE_OPTIONS_M4}
         "-ffunction-sections \\"
         "-Wdouble-promotion \\"
         "-Wall \\"
-        "-Og \\"
+        "-Og -g3 \\"
         ""
     )
 string (REPLACE ";" " " DBG_COMPILE_OPTIONS_M4 ${DBG_COMPILE_OPTIONS_M4})

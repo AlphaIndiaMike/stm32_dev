@@ -8,8 +8,18 @@
             "name": "OCD-Debug",
             "type": "cortex-debug",
             "request": "launch",
+            "cwd": "${workspaceFolder}",
             "executable": "${workspaceFolder}/build/DEMO_STM32.out",
-            "cwd": "${workspaceFolder}"
+            "servertype": "openocd",
+            "device": "STM32F746NG",
+            "runToEntryPoint": "main",
+            "configFiles": [
+                "${workspaceFolder}/90_config/30_openocd/tcl/interface/stlink.cfg",
+                "${workspaceFolder}/90_config/30_openocd/tcl/target/stm32f7x.cfg"
+            ],
+            "svdFile": "${workspaceFolder}/90_config/20_svd/cmsis-svd-stm32-main/stm32f7/STM32F746.svd",
+            "interface": "swd",
+            "showDevDebugOutput": "raw"
         }
     ]
 }
