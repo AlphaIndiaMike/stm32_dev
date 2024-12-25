@@ -21,8 +21,8 @@ Makefile
 *.dll
 *.so
 *.dylib
-*.lib
-*.a
+# *.lib
+# *.a
 
 # Object files
 *.o
