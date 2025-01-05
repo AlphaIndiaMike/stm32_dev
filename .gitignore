@@ -14,16 +14,6 @@ CMakeFiles/
 cmake_install.cmake
 Makefile
 
-# Generated executable and library files
-*.exe
-*.out
-*.app
-*.dll
-*.so
-*.dylib
-# *.lib
-# *.a
-
 # Object files
 *.o
 *.obj

@@ -5,6 +5,7 @@
     "search.showLineNumbers": true,
     "C_Cpp.default.cStandard": "c99",
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
     "editor.wordWrapColumn": 200,
     "editor.tabCompletion": "on",
     "editor.renderWhitespace": "all",
@@ -12,5 +13,11 @@
     "editor.tabSize": 4,
     "files.associations": {
         "stm32f4xx_hal.h": "c"
+    },
+    "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": true,
+        "strings": true
     },
 }

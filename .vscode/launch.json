@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "OCD-Debug",
+            "name": "STM32F7-Debug",
             "type": "cortex-debug",
             "request": "launch",
             "cwd": "${workspaceFolder}",
@@ -20,6 +20,207 @@
             "svdFile": "${workspaceFolder}/90_config/20_svd/cmsis-svd-stm32-main/stm32f7/STM32F746.svd",
             "interface": "swd",
             "showDevDebugOutput": "raw"
+        },
+        {
+            "name": "Debug_CM7 Dual Core (Start first)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Build Project",
+            // M7 firmware path:
+            "executable": "${workspaceFolder}/build/FBL_STM32_CM7.out",
+            "device": "STM32H755_CM7",
+            "runToEntryPoint": "main",
+
+            // Use our stlink.cfg + the new dual-core cfg
+            "configFiles": [
+            "${workspaceFolder}/90_config/30_openocd/tcl/interface/stlink.cfg",
+            "${workspaceFolder}/90_config/30_openocd/tcl/target/custom/stm32h755_dual_core.cfg"
+            ],
+
+            // M7 is typically core #0 in a dual-core script
+            "targetId": "0",
+
+            // Optional SVD for register view
+            "svdFile": "${workspaceFolder}/90_config/20_svd/cmsis-svd-stm32-main/stm32h7/STM32H755_CM7.svd",
+
+            "interface": "swd",
+            "showDevDebugOutput": "raw",
+
+            // We'll use preLaunchCommands to program both images
+            "preLaunchCommands": [
+                // 1) Halt M7
+                "monitor reset halt",
+                // Full chip erase command
+                //"monitor flash erase_sector 0 0 last",
+
+                // 2) Program M7 firmware to 0x08000000
+                "monitor program ${workspaceFolder}/build/FBL_STM32_CM7.out verify",
+
+                // 3) Halt M7 again
+                "monitor reset halt",
+
+                // 4) Switch to M4 core
+                "monitor targets stm32h7x.cpu1",
+                "monitor reset halt",
+
+                // 5) Program M4 firmware to 0x08100000
+                "monitor program ${workspaceFolder}/build/FBL_STM32_CM4.out verify",
+
+                // 6) Halt M4
+                "monitor reset halt",
+
+                // 7) Switch back to M7, ready to debug
+                "monitor targets stm32h7x.cpu0",
+                "monitor reset halt"
+            ]
+        },
+        {
+            "name": "Debug_CM4 Dual Core (Attach to CM7)",
+            "type": "cortex-debug",
+            "request": "attach",
+            // This time we do NOT spawn a new server
+            "servertype": "external",
+
+            "cwd": "${workspaceFolder}",
+            // M4 firmware path:
+            "executable": "${workspaceFolder}/build/FBL_STM32_CM4.out",
+            "device": "STM32H755_CM4",
+
+            // Connect to the existing GDB server started by Debug_CM7
+            "gdbTarget": "localhost:50008",
+            // M4 is typically core #1
+            "targetId": "1",
+
+            // Optional SVD for M4
+            "svdFile": "${workspaceFolder}/90_config/20_svd/cmsis-svd-stm32-main/stm32h7/STM32H755_CM4.svd",
+
+            "interface": "swd",
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "raw"
+        },
+        {
+            "name": "Debug_CM7_SingleCore",
+            "type": "cortex-debug",
+            "request": "launch",
+            // We'll spawn OpenOCD for the M7
+            "servertype": "openocd",
+
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Build CM7 only",
+            // M7 firmware path:
+            "executable": "${workspaceFolder}/build/FBL_STM32_CM7.out",
+            "device": "STM32H755_CM7",
+            "runToEntryPoint": "main",
+
+            // Use our stlink.cfg + the new dual-core cfg
+            "configFiles": [
+            "${workspaceFolder}/90_config/30_openocd/tcl/interface/stlink.cfg",
+            "${workspaceFolder}/90_config/30_openocd/tcl/target/stm32h7x.cfg"
+            ],
+
+            // Optional SVD for register view
+            "svdFile": "${workspaceFolder}/90_config/20_svd/cmsis-svd-stm32-main/stm32h7/STM32H755_CM7.svd",
+
+            "swoConfig": {
+                "enabled": true,
+                "cpuFrequency": 400000000, /* CPU Frequency - must adapt for other controllers */
+                "swoFrequency": 2000000,   /* Debugger Frequency 2MHz !OK! */
+                "source": "probe",
+                "decoders": [
+                    {
+                        "type": "console",
+                        "label": "ITM",
+                        "showOnStartup": true,
+                        "port": 0,
+                        "encoding": "ascii"
+                    }
+                ]
+            },
+
+            "interface": "swd",
+            "showDevDebugOutput": "raw"
+        },
+        {
+            "name": "Debug_CM7_SingleCore (FBL + APP)",
+            "type": "cortex-debug",
+            "request": "launch",
+            // We'll spawn OpenOCD for the M7
+            "servertype": "openocd",
+
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "Build CM7 fbl+asw", // Comment out to save time with builds
+            // M7 firmware path:
+            "executable": "${workspaceFolder}/build/FBL_STM32_CM7.out",
+            "device": "STM32H755_CM7",
+            "runToEntryPoint": "main",
+
+            // Use our stlink.cfg + the new dual-core cfg
+            "configFiles": [
+            "${workspaceFolder}/90_config/30_openocd/tcl/interface/stlink.cfg",
+            "${workspaceFolder}/90_config/30_openocd/tcl/target/stm32h7x.cfg"
+            ],
+
+            // Optional SVD for register view
+            "svdFile": "${workspaceFolder}/90_config/20_svd/cmsis-svd-stm32-main/stm32h7/STM32H755_CM7.svd",
+
+            "swoConfig": {
+                "enabled": true,
+                "cpuFrequency": 400000000, /* CPU Frequency - must adapt for other controllers */
+                "swoFrequency": 2000000,   /* Debugger Frequency 2MHz !OK! */
+                "source": "probe",
+                "decoders": [
+                    {
+                        "type": "console",
+                        "label": "ITM",
+                        "showOnStartup": true,
+                        "port": 0,
+                        "encoding": "ascii"
+                    }
+                ]
+            },
+
+            "interface": "swd",
+            "showDevDebugOutput": "raw",
+
+            "preLaunchCommands": [
+                // 1) Reset and halt
+                "monitor reset halt",
+
+                // 2) Flash the FBL at ..
+                "monitor flash write_image erase \"${workspaceFolder}/build/FBL_STM32_CM7.bin\" 0x08000000 bin verify",
+
+                // 3) Flash the App at ..
+                "monitor flash write_image erase \"${workspaceFolder}/build/DEMO_ASW_STM32_CM7.bin\" 0x08060000 bin verify",
+
+                // 4) Tell GDB about the App’s symbols so we can set breakpoints
+                "add-symbol-file \"${workspaceFolder}/build/DEMO_ASW_STM32_CM7.out\" 0x08060000 -s .data 0x24000000",
+
+                 // Make symbol loading more permissive
+                "set auto-load safe-path /",
+                
+                // More aggressive symbol loading
+                "set multiple-symbols ask",
+                
+                // Allow setting breakpoints in pending shared libraries
+                "set breakpoint pending on",
+                
+                // More verbose debugging output
+                "set debug remote 1",
+                
+                // Improve handling of overlapping memory regions
+                "set mem inaccessible-by-default off"
+            ],
+            /*"symbolLoadInfo": {
+                "loadAll": true,
+                "exceptionMask": 0
+            },
+            "postAttachCommands": [
+                "set trust-readonly-sections on",
+                "set mem inaccessible-by-default off"
+            ]*/
         }
     ]
 }

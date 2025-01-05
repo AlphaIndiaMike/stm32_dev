@@ -6,6 +6,9 @@
       "usernamehw.errorlens",
       "purocean.drawio-preview",
       "ryanluker.vscode-coverage-gutters",
-      "ms-vscode.cmake-tools"
+      "ms-vscode.cmake-tools",
+      "ms-vscode.vscode-serial-monitor",
+      "trond-snekvik.gnu-mapfiles",
+      "zixuanwang.linkerscript"
     ]
   }

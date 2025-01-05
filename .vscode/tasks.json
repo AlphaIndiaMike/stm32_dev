@@ -1,0 +1,42 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Build Project",
+        "type": "shell",
+        "command": "${workspaceFolder}/build.sh",
+        "args": [],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": [],
+        "detail": "Run the build.sh script to build the project."
+      },
+      {
+        "label": "Build CM7 only",
+        "type": "shell",
+        "command": "${workspaceFolder}/build_cm7_only.sh",
+        "args": [],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": [],
+        "detail": "CM7 Build"
+      },
+      {
+        "label": "Build CM7 fbl+asw",
+        "type": "shell",
+        "command": "${workspaceFolder}/build.sh",
+        "args": [],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": [],
+        "detail": "CM7 Build FBL + ASW"
+      }
+    ]
+  }
+  
