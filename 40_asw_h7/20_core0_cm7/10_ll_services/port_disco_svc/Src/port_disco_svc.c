@@ -6,178 +6,216 @@
 #include <string.h>
 #include <stdio.h>
 
-// Function to check if a GPIO port's clock is enabled
-static int is_gpio_port_enabled(GPIO_TypeDef* port)
+/* Define boolean type for C standard */
+typedef enum {
+    GPIO_FALSE = 0U,
+    GPIO_TRUE = 1U
+} GPIO_Bool_Type;
+
+/* 
+ * Enumeration for GPIO modes.
+ * (Kept here for consistency, though the code now uses strings
+ * for display; you could remove or reuse this in the future.)
+ */
+typedef enum {
+    GPIO_MODE_TYPE_INPUT = 0U,
+    GPIO_MODE_TYPE_OUTPUT_PP,
+    GPIO_MODE_TYPE_OUTPUT_OD,
+    GPIO_MODE_TYPE_AF_PP,
+    GPIO_MODE_TYPE_AF_OD,
+    GPIO_MODE_TYPE_ANALOG,
+    GPIO_MODE_TYPE_UNKNOWN
+} GPIO_Mode_Type;
+
+/* Structure for pin information */
+typedef struct {
+    uint8_t pin_number;
+    /* FIX: changed from GPIO_Mode_Type mode to const char* mode */
+    const char* mode;  /* store string pointers instead of an enum */
+} GPIO_Pin_Info_Type;
+
+/* Structure for port information */
+typedef struct {
+    const char* port_name;
+    GPIO_TypeDef* port;
+    GPIO_Pin_Info_Type pins[16U];
+    uint8_t pin_count;
+} GPIO_Port_Info_Type;
+
+/* Global data structure */
+typedef struct {
+    GPIO_Port_Info_Type ports[11U];
+    uint8_t total_enabled_ports;
+} GPIO_Data_Type;
+
+/* Global static data for GPIO information */
+static GPIO_Data_Type gpio_data = {{{0U}}, 0U};
+
+/* Static port mapping array */
+static const struct {
+    GPIO_TypeDef* port;
+    const char* name;
+} PORT_MAP[11U] = {
+    {GPIOA, "GPIOA"},
+    {GPIOB, "GPIOB"},
+    {GPIOC, "GPIOC"},
+    {GPIOD, "GPIOD"},
+    {GPIOE, "GPIOE"},
+    {GPIOF, "GPIOF"},
+    {GPIOG, "GPIOG"},
+    {GPIOH, "GPIOH"},
+    {GPIOI, "GPIOI"},
+    {GPIOJ, "GPIOJ"},
+    {GPIOK, "GPIOK"}
+};
+
+/* Function to check if GPIO port clock is enabled */
+static GPIO_Bool_Type is_gpio_port_enabled(const GPIO_TypeDef* const port)
 {
-    if (port == GPIOA)
-        return __HAL_RCC_GPIOA_IS_CLK_ENABLED();
-    if (port == GPIOB)
-        return __HAL_RCC_GPIOB_IS_CLK_ENABLED();
-    if (port == GPIOC)
-        return __HAL_RCC_GPIOC_IS_CLK_ENABLED();
-    if (port == GPIOD)
-        return __HAL_RCC_GPIOD_IS_CLK_ENABLED();
-    if (port == GPIOE)
-        return __HAL_RCC_GPIOE_IS_CLK_ENABLED();
-    if (port == GPIOF)
-        return __HAL_RCC_GPIOF_IS_CLK_ENABLED();
-    if (port == GPIOG)
-        return __HAL_RCC_GPIOG_IS_CLK_ENABLED();
-    if (port == GPIOH)
-        return __HAL_RCC_GPIOH_IS_CLK_ENABLED();
-    if (port == GPIOI)
-        return __HAL_RCC_GPIOI_IS_CLK_ENABLED();
-    if (port == GPIOJ)
-        return __HAL_RCC_GPIOJ_IS_CLK_ENABLED();
-    if (port == GPIOK)
-        return __HAL_RCC_GPIOK_IS_CLK_ENABLED();
+    GPIO_Bool_Type is_enabled = GPIO_FALSE;
     
-    // Add additional ports if necessary
-    return 0;
-}
-
-// Function to get the mode of a specific pin as a string
-static const char* get_pin_mode(GPIO_TypeDef* port, int pin)
-{
-    uint32_t pin_mode = (port->MODER >> (pin * 2)) & 0x3;
-
-    switch(pin_mode)
-    {
-        case GPIO_MODE_INPUT:
-            return "INPUT";
-        case GPIO_MODE_OUTPUT_PP:
-            return "OUTPUT_PP";
-        case GPIO_MODE_OUTPUT_OD:
-            return "OUTPUT_OD";
-        case GPIO_MODE_AF_PP:
-            return "AF_PP";
-        case GPIO_MODE_AF_OD:
-            return "AF_OD";
-        case GPIO_MODE_ANALOG:
-            return "ANALOG";
-        default:
-            return "UNKNOWN";
+    if (port == GPIOA) {
+        is_enabled = (__HAL_RCC_GPIOA_IS_CLK_ENABLED() != 0U) ? GPIO_TRUE : GPIO_FALSE;
     }
+    else if (port == GPIOB) {
+        is_enabled = (__HAL_RCC_GPIOB_IS_CLK_ENABLED() != 0U) ? GPIO_TRUE : GPIO_FALSE;
+    }
+    else if (port == GPIOC) {
+        is_enabled = (__HAL_RCC_GPIOC_IS_CLK_ENABLED() != 0U) ? GPIO_TRUE : GPIO_FALSE;
+    }
+    else if (port == GPIOD) {
+        is_enabled = (__HAL_RCC_GPIOD_IS_CLK_ENABLED() != 0U) ? GPIO_TRUE : GPIO_FALSE;
+    }
+    else if (port == GPIOE) {
+        is_enabled = (__HAL_RCC_GPIOE_IS_CLK_ENABLED() != 0U) ? GPIO_TRUE : GPIO_FALSE;
+    }
+    else if (port == GPIOF) {
+        is_enabled = (__HAL_RCC_GPIOF_IS_CLK_ENABLED() != 0U) ? GPIO_TRUE : GPIO_FALSE;
+    }
+    else if (port == GPIOG) {
+        is_enabled = (__HAL_RCC_GPIOG_IS_CLK_ENABLED() != 0U) ? GPIO_TRUE : GPIO_FALSE;
+    }
+    else if (port == GPIOH) {
+        is_enabled = (__HAL_RCC_GPIOH_IS_CLK_ENABLED() != 0U) ? GPIO_TRUE : GPIO_FALSE;
+    }
+    else if (port == GPIOI) {
+        is_enabled = (__HAL_RCC_GPIOI_IS_CLK_ENABLED() != 0U) ? GPIO_TRUE : GPIO_FALSE;
+    }
+    else if (port == GPIOJ) {
+        is_enabled = (__HAL_RCC_GPIOJ_IS_CLK_ENABLED() != 0U) ? GPIO_TRUE : GPIO_FALSE;
+    }
+    else if (port == GPIOK) {
+        is_enabled = (__HAL_RCC_GPIOK_IS_CLK_ENABLED() != 0U) ? GPIO_TRUE : GPIO_FALSE;
+    }
+    else {
+        /* Port not recognized, keep is_enabled as GPIO_FALSE */
+    }
+    
+    return is_enabled;
 }
 
-// Function to display enabled GPIO ports and their configured pins with functions
-void display_enabled_pins(void)
+/* Function to get pin mode as a string */
+static const char* get_pin_mode(const GPIO_TypeDef* const port, const uint8_t pin)
 {
-    // Buffer to accumulate the list of enabled ports and their pins
-    char buffer[4096]; // Increased buffer size to accommodate detailed output
-    size_t offset = 0;
-
-    // Start the message with a header
-    const char* header = "Enabled GPIO Ports and Configured Pins:\n";
-    strncpy(buffer, header, sizeof(buffer) - 1);
-    buffer[sizeof(buffer) - 1] = '\0';  // Ensure null-termination
-    offset += strlen(header);
-
-    // Array of GPIO port base addresses and their names
-    typedef struct {
-        GPIO_TypeDef* port;
-        const char* name;
-    } GPIO_Port;
-
-    GPIO_Port gpio_ports[] = {
-        {GPIOA, "GPIOA"},
-        {GPIOB, "GPIOB"},
-        {GPIOC, "GPIOC"},
-        {GPIOD, "GPIOD"},
-        {GPIOE, "GPIOE"},
-        {GPIOF, "GPIOF"},
-        {GPIOG, "GPIOG"},
-        {GPIOH, "GPIOH"},
-        {GPIOI, "GPIOI"},
-        {GPIOJ, "GPIOJ"},
-        {GPIOK, "GPIOK"},
-    };
-
-    const int num_ports = sizeof(gpio_ports) / sizeof(GPIO_Port);
-
-    // Iterate through each GPIO port
-    for(int i = 0; i < num_ports; i++)
-    {
-        GPIO_TypeDef* port = gpio_ports[i].port;
-        const char* port_name = gpio_ports[i].name;
-
-        // Check if the GPIO port's clock is enabled
-        if(is_gpio_port_enabled(port))
-        {
-            // Append the port name
-            int written = snprintf(buffer + offset, sizeof(buffer) - offset, "%s:\n", port_name);
-            if(written < 0 || (size_t)written >= sizeof(buffer) - offset)
-            {
-                // If buffer is full or an error occurred, send the current buffer and reset
-                serial_hal_svc_send(buffer);
-                offset = 0;
-                buffer[0] = '\0';
-                // Retry adding the current port after reset
-                written = snprintf(buffer + offset, sizeof(buffer) - offset, "%s:\n", port_name);
-                if(written > 0 && (size_t)written < sizeof(buffer) - offset)
-                {
-                    offset += written;
-                }
-                else
-                {
-                    // If still unable to write, skip to next port
-                    continue;
-                }
-            }
-            else
-            {
-                offset += written;
-            }
-
-            // Iterate through each pin (0-15) in the port to check its configuration
-            for(int pin = 0; pin < 16; pin++)
-            {
-                const char* mode = get_pin_mode(port, pin);
-
-                // Define criteria for "configured" pins
-                // Here, all modes except "INPUT", "ANALOG", and "UNKNOWN" are considered configured
-                // Adjust this condition based on your specific requirements
-                if(strcmp(mode, "UNKNOWN") != 0)
-                {
-                    // Append the pin information on a new line with indentation
-                    written = snprintf(buffer + offset, sizeof(buffer) - offset, "  Pin%d: %s\n", pin, mode);
-                    if(written < 0 || (size_t)written >= sizeof(buffer) - offset)
-                    {
-                        // If buffer is full or an error occurred, send the current buffer and reset
-                        serial_hal_svc_send(buffer);
-                        offset = 0;
-                        buffer[0] = '\0';
-                        // Retry adding the current pin after reset
-                        written = snprintf(buffer + offset, sizeof(buffer) - offset, "  Pin%d: %s\n", pin, mode);
-                        if(written > 0 && (size_t)written < sizeof(buffer) - offset)
-                        {
-                            offset += written;
-                        }
-                        else
-                        {
-                            // If still unable to write, skip to next pin
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        offset += written;
-                    }
-                }
-            }
-
-            // Add an empty line for better readability between ports
-            written = snprintf(buffer + offset, sizeof(buffer) - offset, "\n");
-            if(written > 0 && (size_t)written < sizeof(buffer) - offset)
-            {
-                offset += written;
-            }
+    const char* mode_str = "UNKNOWN";
+    
+    if ((pin < 16U) && (port != NULL)) {
+        const uint32_t pin_mode = (port->MODER >> (pin * 2U)) & 0x3U;
+        const uint32_t otyper  = (port->OTYPER >> pin) & 0x1U;
+        const uint32_t alternate = (pin_mode == 0x2U) ? 1U : 0U;
+        
+        if (pin_mode == 0x0U) {
+            mode_str = "INPUT";
+        }
+        else if ((pin_mode == 0x1U) && (otyper == 0U)) {
+            mode_str = "OUTPUT_PP";
+        }
+        else if ((pin_mode == 0x1U) && (otyper != 0U)) {
+            mode_str = "OUTPUT_OD";
+        }
+        else if ((alternate != 0U) && (otyper == 0U)) {
+            mode_str = "AF_PP";
+        }
+        else if ((alternate != 0U) && (otyper != 0U)) {
+            mode_str = "AF_OD";
+        }
+        else if (pin_mode == 0x3U) {
+            mode_str = "ANALOG";
+        }
+        else {
+            /* Keep as "UNKNOWN" */
         }
     }
+    
+    return mode_str;
+}
 
-    // Ensure the buffer is null-terminated before sending
-    buffer[sizeof(buffer) - 1] = '\0';
+/* Function to collect GPIO information */
+static void collect_gpio_info(void)
+{
+    uint8_t enabled_ports = 0U;
+    
+    /* Clear existing data */
+    (void)memset(&gpio_data, 0, sizeof(gpio_data));
+    
+    /* Iterate through all possible ports */
+    for (uint8_t i = 0U; (i < 11U) && (enabled_ports < 11U); i++) {
+        if (is_gpio_port_enabled(PORT_MAP[i].port) == GPIO_TRUE) {
+            GPIO_Port_Info_Type* const current_port = &gpio_data.ports[enabled_ports];
+            uint8_t configured_pins = 0U;
+            
+            current_port->port_name = PORT_MAP[i].name;
+            current_port->port = PORT_MAP[i].port;
+            
+            /* Check all pins on this port */
+            for (uint8_t pin = 0U; (pin < 16U) && (configured_pins < 16U); pin++) {
+                const char* const mode = get_pin_mode(PORT_MAP[i].port, pin);
+                
+                /* We only store pins with a known mode */
+                if (0U != strcmp(mode, "UNKNOWN")) {
+                    current_port->pins[configured_pins].pin_number = pin;
+                    /* FIX: store string pointer instead of enum */
+                    current_port->pins[configured_pins].mode = mode;
+                    configured_pins++;
+                }
+            }
+            
+            current_port->pin_count = configured_pins;
+            enabled_ports++;
+        }
+    }
+    
+    gpio_data.total_enabled_ports = enabled_ports;
+}
 
-    // Send the accumulated buffer
-    serial_hal_svc_send(buffer);
+/* Function to display enabled pins */
+void display_enabled_pins(void)
+{
+    char line[64U] = {0U};
+    
+    collect_gpio_info();
+    
+    /* Send header */
+    serial_hal_svc_send("Enabled GPIO Ports and Configured Pins:\n");
+    
+    /* Display information for each enabled port */
+    for (uint8_t i = 0U; i < gpio_data.total_enabled_ports; i++) {
+        const GPIO_Port_Info_Type* const current_port = &gpio_data.ports[i];
+        
+        /* Send port name */
+        (void)snprintf(line, sizeof(line), "%s:\n", current_port->port_name);
+        serial_hal_svc_send(line);
+        
+        /* Send pin information */
+        for (uint8_t j = 0U; j < current_port->pin_count; j++) {
+            const GPIO_Pin_Info_Type* const current_pin = &current_port->pins[j];
+            (void)snprintf(line, sizeof(line), "  Pin%u: %s\n", 
+                           (unsigned int)current_pin->pin_number, 
+                           current_pin->mode);
+            serial_hal_svc_send(line);
+        }
+        
+        /* Add spacing between ports */
+        serial_hal_svc_send("\n");
+    }
 }

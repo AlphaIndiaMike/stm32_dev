@@ -111,7 +111,7 @@
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "Build CM7 only",
             // M7 firmware path:
-            "executable": "${workspaceFolder}/build/FBL_STM32_CM7.out",
+            "executable": "${workspaceFolder}/build/DEMO_ASW_STM32_CM7.out",
             "device": "STM32H755_CM7",
             "runToEntryPoint": "main",
 
@@ -193,10 +193,10 @@
                 "monitor flash write_image erase \"${workspaceFolder}/build/FBL_STM32_CM7.bin\" 0x08000000 bin verify",
 
                 // 3) Flash the App at ..
-                "monitor flash write_image erase \"${workspaceFolder}/build/DEMO_ASW_STM32_CM7.bin\" 0x08060000 bin verify",
+                "monitor flash write_image erase \"${workspaceFolder}/build/DEMO_ASW_STM32_CM7.bin\" 0x08060800 bin verify",
 
                 // 4) Tell GDB about the App’s symbols so we can set breakpoints
-                "add-symbol-file \"${workspaceFolder}/build/DEMO_ASW_STM32_CM7.out\" 0x08060000 -s .data 0x24000000",
+                "add-symbol-file \"${workspaceFolder}/build/DEMO_ASW_STM32_CM7.out\" 0x08060800 -s .data 0x24000000",
 
                  // Make symbol loading more permissive
                 "set auto-load safe-path /",

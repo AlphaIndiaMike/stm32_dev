@@ -16,7 +16,7 @@
       {
         "label": "Build CM7 only",
         "type": "shell",
-        "command": "${workspaceFolder}/build_cm7_only.sh",
+        "command": "${workspaceFolder}/build_cm7_asw.sh",
         "args": [],
         "group": {
           "kind": "build",

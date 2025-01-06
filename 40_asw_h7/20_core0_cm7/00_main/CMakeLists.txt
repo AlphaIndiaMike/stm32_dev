@@ -3,16 +3,12 @@ Component name
 -------------------------------------]]
 
 set(component_name main_component_cm7)
-set(component_src main_component_cm7_source)
+set(component_src ${component_name}_source)
 
-message("Compiling ${component_name}, bsp_directory: ${bsp_directory}")
+message("Compiling ${component_name}")
 
 #[[-----------------------------------
 Build setup
--------------------------------------]]
-
-#[[-----------------------------------
-CM7 CORE
 -------------------------------------]]
 
 set(${component_src}                       
@@ -45,7 +41,6 @@ target_include_directories( ${component_name} PRIVATE
     ${ll_directory}/svo_svc/Inc
     ${ll_directory}/port_disco_svc/Inc
 )
-
 
 #[[-----------------------------------
 END

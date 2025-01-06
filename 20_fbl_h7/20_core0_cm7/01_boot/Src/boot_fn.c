@@ -7,7 +7,7 @@
 #include <stdio.h>
 
 #define FBL_RESET_HANDLER_OFFSET	4
-#define JUMP_ADDRESS                0x8060000
+#define JUMP_ADDRESS                0x8060800
 
 
 void show_logo(void)
@@ -77,6 +77,7 @@ void fbl_jump_app(const unsigned long address) {
     // Validate the address
     if ((address & 0xFF000000) != 0x08000000 &&  // Flash
         (address & 0xFF000000) != 0x24000000) {  // AXISRAM
+        serial_hal_svc_send("Error invalid address \n");
         return;  // Invalid address
     }
     
@@ -85,6 +86,8 @@ void fbl_jump_app(const unsigned long address) {
     if ((stack_pointer & 0x7) != 0 ||  // Must be 8-byte aligned
         stack_pointer < 0x24000000 ||   // Below AXISRAM
         stack_pointer > 0x24080000) {   // Above AXISRAM
+        serial_hal_svc_send("Error invalid stack pointer \n");
+        serial_hal_svc_send_param("Stack pointer address: ",stack_pointer);
         return;  // Invalid stack pointer
     }
     
