@@ -1,0 +1,137 @@
+#[[-----------------------------------
+Component name
+-------------------------------------]]
+
+set(component_name stm32f4xx_hal_driver_component)
+set(component_src hal_component_source)
+
+message("Compiling ${component_name}, bsp_directory: ${bsp_directory}")
+
+#[[-----------------------------------
+Build setup begin 
+-------------------------------------]]
+
+#[[-----------------------------------
+Components
+-------------------------------------]]
+
+set(${component_src}                      
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_i2c.c 
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_sram.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal.c                 
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_i2c_ex.c          
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_tim.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_adc.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_i2s.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_tim_ex.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_adc_ex.c          
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_i2s_ex.c          
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_can.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_irda.c            
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_cec.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_iwdg.c            
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_cortex.c          
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_lptim.c           
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_uart.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_crc.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_ltdc.c            
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_usart.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_cryp.c            
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_ltdc_ex.c         
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_wwdg.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_cryp_ex.c         
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_mmc.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_adc.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_dac.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_crc.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_dac_ex.c          
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_nand.c            
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_dac.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_dcmi.c            
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_nor.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_dma.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_dcmi_ex.c         
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_pccard.c          
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_dma2d.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_dfsdm.c           
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_pcd.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_exti.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_dma.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_pcd_ex.c          
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_fmc.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_dma2d.c           
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_pwr.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_fmpi2c.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_dma_ex.c          
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_pwr_ex.c          
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_fsmc.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_dsi.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_qspi.c            
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_gpio.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_eth.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_rcc.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_i2c.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_exti.c            
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_rcc_ex.c          
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_lptim.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_flash.c           
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_rng.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_pwr.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_flash_ex.c        
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_rtc.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_rcc.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_flash_ramfunc.c   
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_rtc_ex.c          
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_rng.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_fmpi2c.c          
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_sai.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_rtc.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_fmpi2c_ex.c       
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_sai_ex.c          
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_sdmmc.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_fmpsmbus.c        
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_sd.c              
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_spi.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_fmpsmbus_ex.c     
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_sdram.c           
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_tim.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_gpio.c            
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_smartcard.c       
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_usart.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_hash.c            
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_smbus.c           
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_usb.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_hash_ex.c         
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_spdifrx.c         
+    stm32f4xx-hal-driver/Src/stm32f4xx_ll_utils.c
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_hcd.c             
+    stm32f4xx-hal-driver/Src/stm32f4xx_hal_spi.c
+)
+
+#[[-----------------------------------
+Compiler flag
+-------------------------------------]]
+set_source_files_properties( ${${component_src}}
+    COMPILE_FLAGS "${SYSTEM_COMPILE_OPTIONS}")
+
+#[[-----------------------------------
+Add library
+-------------------------------------]]
+
+add_library(${component_name} OBJECT ${${component_src}})
+
+target_compile_definitions(${component_name} PRIVATE 
+	CORE_CM4
+	USE_HAL_DRIVER 
+	STM32F411xE 
+)
+
+target_include_directories( ${component_name} PRIVATE
+    stm32f4xx-hal-driver/Inc/Config
+    stm32f4xx-hal-driver/Inc/Legacy
+    stm32f4xx-hal-driver/Inc
+)
+
+#[[-----------------------------------
+END
+-------------------------------------]]

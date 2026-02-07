@@ -64,6 +64,9 @@ Each level is prefixed with a numeric range or name, as indicated below.
 ├── 91_HIL/                          <-- HIL test setup domain
 │   └── (contents)/
 │
+├── 92_SiL/                          <-- Software in a Loop test setup domain
+│   └── (contents)/
+│
 ├── 99_build/                        <-- Build setup domain
 │   └── (contents)/
 │
